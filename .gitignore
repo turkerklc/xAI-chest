@@ -233,3 +233,4 @@ processed_data/
 *.h5
 models/
 checkpoints/
+node_modules/

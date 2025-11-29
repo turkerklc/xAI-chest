@@ -1,3 +1,4 @@
+from fastapi.middleware.cors import CORSMiddleware
 import sys
 import torch
 import cv2
@@ -34,7 +35,14 @@ app = FastAPI(
       title = "Chest X-Ray xAI ",
       description="Sağlıkta Yapay Zeka: Hastalık tahmini ve Grad-CAM ile açıklanabilirlik.",
       version="1.0"
-) 
+)
+app.add_middleware(
+      CORSMiddleware,
+      allow_origins=["*"],  # Güvenlik için prodüksiyonda site adresi yazılır, şimdilik herkese açık (*) olsun.
+      allow_credentials = True,
+      allow_methods=["*"],  # GET, POST, vb. hepsi serbest
+      allow_headers=["*"],
+      )
 
 model = None
 device = None
