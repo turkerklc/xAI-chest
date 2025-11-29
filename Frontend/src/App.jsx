@@ -65,8 +65,8 @@ function App() {
           </div>
           <div className="hidden md:flex space-x-8 font-medium">
             <a href="#analyzer" className="hover:text-blue-600 transition">Analiz</a>
-            <a href="#details" className="hover:text-blue-600 transition">Nasıl Çalışır?</a>
-            <a href="#about" className="hover:text-blue-600 transition">Ekip</a>
+            <a href="#details" className="hover:text-blue-600 transition">Teknolojik Altyapı</a>
+            <a href="#about" className="hover:text-blue-600 transition">Biz Kimiz?</a>
           </div>
         </div>
       </nav>
@@ -187,7 +187,7 @@ function App() {
           <h2 className="text-3xl font-bold text-gray-800 mb-8">Biz Kimiz?</h2>
           <div className="flex justify-center gap-10">
             <div className="bg-white p-6 rounded-xl shadow-lg w-64"><h3 className="font-bold text-lg">Türker Kılıç</h3><p className="text-blue-500">AI Engineer</p></div>
-            <div className="bg-white p-6 rounded-xl shadow-lg w-64"><h3 className="font-bold text-lg">Ferhat</h3><p className="text-blue-500">Frontend Dev</p></div>
+            <div className="bg-white p-6 rounded-xl shadow-lg w-64"><h3 className="font-bold text-lg">Ferhat Köknar</h3><p className="text-blue-500">Frontend Dev</p></div>
           </div>
         </div>
       </section>
