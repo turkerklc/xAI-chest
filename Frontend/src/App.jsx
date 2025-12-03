@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { FaCloudUploadAlt, FaHeartbeat, FaInfoCircle, FaUsers, FaArrowRight } from 'react-icons/fa';
+import { FaCloudUploadAlt, FaHeartbeat, FaInfoCircle, FaUsers, FaArrowRight, FaMap, FaMapMarked, FaWatchmanMonitoring, FaCannabis, FaExclamation } from 'react-icons/fa';
 
 function App() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -45,14 +45,46 @@ function App() {
     }
   };
 
+  const handleAgeChange = (e) => {
+    const value = e.target.value;
+
+    if (value === "") {
+      setAge("");
+      return;
+    }
+
+    const numValue = parseInt(value, 10);
+
+    if(!isNaN(numValue) && numValue >= 0 && numValue <= 150) {
+      setAge(value);
+    }
+  };
+ 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setSelectedFile(file);
-      setPreviewUrl(URL.createObjectURL(file));
-      setPredictions(null);
-      setHeatmapUrl(null);
+    if(!file) return; // eğer dosya seçilmediyse dur.
+
+    const validTypes = ['image/jpeg', 'image/png', 'image/jpg']; // sadece ekteki uzantıları kabul et.
+
+    if (!validTypes.includes(file.type)) {
+      alert("Hata: sadece JPEG, JPG ve PNG formatındaki resimler kabul edilir")
+      e.target.value = null //input'u temizle
+      return;
     }
+
+    //Dosya boyutunu kontrol et
+    const maxSize = 5 * 1024 * 1024; 
+    if (file.size > maxSize) {
+      alert("Hata: Dosya boyutu çok yüksek! Maksimum 5MB yükleyebilirsiniz");
+      e.target.value = null;
+      return;
+    }
+    
+    //Her şey okeyse devam et
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+    setPredictions(null);
+    setHeatmapUrl(null);
   };
 
   return (
@@ -65,8 +97,8 @@ function App() {
           </div>
           <div className="hidden md:flex space-x-8 font-medium">
             <a href="#analyzer" className="hover:text-blue-600 transition">Analiz</a>
-            <a href="#details" className="hover:text-blue-600 transition">Teknolojik Altyapı</a>
-            <a href="#about" className="hover:text-blue-600 transition">Biz Kimiz?</a>
+            <a href="#details" className="hover:text-blue-600 transition">Proje Hakkında</a>
+            <a href="#about" className="hover:text-blue-600 transition">Biz Kimiz</a>
           </div>
         </div>
       </nav>
@@ -89,7 +121,7 @@ function App() {
                 <FaCloudUploadAlt className="text-blue-600" /> Görüntü Yükle
               </h2>
               <div className="border-3 border-dashed border-blue-200 rounded-2xl bg-white p-8 text-center hover:border-blue-400 transition-all cursor-pointer relative group h-80 flex flex-col justify-center items-center">
-                <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                <input type="file" accept=".jpg, .jpeg, .png" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
                 {previewUrl ? (
                   <img src={previewUrl} alt="Preview" className="max-h-full max-w-full rounded-lg shadow-sm object-contain" />
                 ) : (
@@ -104,13 +136,14 @@ function App() {
               <div className="grid grid-cols-2 gap-4 mt-6">
                 <div>
                   <label className="text-xs font-bold text-gray-500 uppercase">Yaş</label>
-                  <input type="number" value={age} onChange={(e) => setAge(e.target.value)} className="w-full mt-1 p-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" placeholder="45" />
+                  <input type="number" value={age} onChange={handleAgeChange} min = "0" max ="150" className="w-full mt-1 p-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" placeholder="45" />
                 </div>
                 <div>
                   <label className="text-xs font-bold text-gray-500 uppercase">Cinsiyet</label>
                   <select value={gender} onChange={(e) => setGender(e.target.value)} className="w-full mt-1 p-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none">
                     <option value="M">Erkek</option>
                     <option value="F">Kadın</option>
+                    <option value="Other">Diğer</option>
                   </select>
                 </div>
               </div>
@@ -170,24 +203,46 @@ function App() {
         </div>
       </section>
       
-      {/* DETAYLAR & HAKKIMIZDA BÖLÜMLERİ (Önceki kodun aynısı) */}
       <section id="details" className="py-24 bg-white border-t border-gray-100">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-10">Teknolojimiz</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-10">Proje Hakkında</h2>
           <div className="grid md:grid-cols-3 gap-10">
-             <div className="p-6 bg-gray-50 rounded-xl"><FaInfoCircle className="text-4xl text-blue-600 mx-auto mb-4"/> <h3 className="font-bold">ResNet-50</h3><p>Endüstri standardı mimari.</p></div>
-             <div className="p-6 bg-gray-50 rounded-xl"><FaHeartbeat className="text-4xl text-blue-600 mx-auto mb-4"/> <h3 className="font-bold">Grad-CAM</h3><p>Şeffaf karar mekanizması.</p></div>
-             <div className="p-6 bg-gray-50 rounded-xl"><FaCloudUploadAlt className="text-4xl text-blue-600 mx-auto mb-4"/> <h3 className="font-bold">Hızlı Analiz</h3><p>M2 optimizasyonu.</p></div>
+             <div className="p-6 bg-gray-50 rounded-xl"><FaInfoCircle className="text-4xl text-blue-600 mx-auto mb-4"/> <h3 className="font-bold">ResNet-50</h3>
+             <p className = "text-gray-600 text-sm leading-relaxed">
+              
+              ResNet-50, derin öğrenme dünyasının en güvenilir mimarilerinden biridir. 
+              Biz bu projede, bu mimariyi 112.000 adet göğüs röntgeni görüntüsüyle 
+              eğiterek, zatürre ve diğer akciğer hastalıklarını %90'a varan doğrulukla 
+              tespit edebilecek hale getirdik. Modelimiz, pikseller arasındaki en ince 
+              detayları bile yakalayabilir. 
+             
+             </p>
+             </div>
+             <div className="p-6 bg-gray-50 rounded-xl"><FaMapMarked className="text-4xl text-blue-600 mx-auto mb-4"/> <h3 className="font-bold">Grad-CAM</h3>
+            <p className = "text-gray-600 text-sm leading-relaxed">
+              Grad-CAM, derin öğrenme modellerinin (özellikle de görüntü işleme modellerinin) nasıl karar verdiğini açıklamak için kullanılan tekniklerden biridir.
+              Yapay zekanın verdiği kararı, girdi olarak aldığı görselin hangi bölgesine bakarak verdiğini göstermek için bir ısı haritası oluşturur. Bu x-AI'nın (Explainable AI)
+              temel taşlarından biridir.
+              </p>
+              </div>
+            <div className = "p-6 bg-gray-50 rounded-xl"><FaExclamation className="text-4xl text-blue-600 mx-auto mb-4"/> <h3 className="font-bold">Uyarı</h3>
+             <p className = "text-gray-600 text-sm leading-relaxed">
+              Bu proje yalnızca eğitim ve akademik araştırma amaçlı geliştirilmiştir. 
+              Sunulan sonuçlar kesinlik taşımaz ve profesyonel bir tıbbi teşhis veya doktor muayenesi yerine geçmez. 
+              Elde edilen veriler tedavi amaçlı kullanılmamalıdır. Geliştiriciler, olası hatalı sonuçlardan veya bu sonuçlara dayanarak alınan kararlardan sorumlu tutulamaz. 
+              Herhangi bir sağlık sorununuzda lütfen uzman bir hekime başvurunuz.
+             </p>
+             </div>
           </div>
         </div>
       </section>
 
       <section id="about" className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold text-gray-800 mb-8">Biz Kimiz?</h2>
+          <h2 className="text-3xl font-bold text-gray-800 mb-8">Biz Kimiz</h2>
           <div className="flex justify-center gap-10">
             <div className="bg-white p-6 rounded-xl shadow-lg w-64"><h3 className="font-bold text-lg">Türker Kılıç</h3><p className="text-blue-500">AI Engineer</p></div>
-            <div className="bg-white p-6 rounded-xl shadow-lg w-64"><h3 className="font-bold text-lg">Ferhat Köknar</h3><p className="text-blue-500">Frontend Dev</p></div>
+            <div className="bg-white p-6 rounded-xl shadow-lg w-64"><h3 className="font-bold text-lg">Ferhat Köknar</h3><p className="text-blue-500">No Code</p></div>
           </div>
         </div>
       </section>
